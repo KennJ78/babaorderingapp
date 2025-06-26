@@ -17,16 +17,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class LoginScreen extends StatefulWidget {
+// ==================== LOGIN SCREEN ====================
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,43 +38,26 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               const Text(
                 'Log In',
-                style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 24),
-
-              // Email
-              _buildFieldLabel('Email'),
-              const SizedBox(height: 4),
-              _buildTextField(_emailController, 'Enter your email'),
-
-              const SizedBox(height: 16),
-
-              // Password
-              _buildFieldLabel('Password'),
-              const SizedBox(height: 4),
-              _buildTextField(_passwordController, 'Enter your password', obscure: true),
-
-              const SizedBox(height: 24),
-
-              // Login Button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Logging in...')),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    'Log in',
-                    style: TextStyle(fontSize: 16, color: Colors.black),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const SignUpScreen()),
+                  );
+                },
+                child: const Text(
+                  "Don't have an account? Sign up",
+                  style: TextStyle(
+                    color: Colors.amber,
+                    decoration: TextDecoration.underline,
                   ),
                 ),
               ),
@@ -91,30 +67,49 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
 
-  Widget _buildFieldLabel(String label) {
-    return Container(
-      alignment: Alignment.centerLeft,
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      color: Colors.black,
-      child: Text(
-        label,
-        style: const TextStyle(color: Colors.white, fontSize: 12),
-      ),
-    );
-  }
+// ==================== SIGN UP SCREEN ====================
+class SignUpScreen extends StatelessWidget {
+  const SignUpScreen({super.key});
 
-  Widget _buildTextField(TextEditingController controller, String hint, {bool obscure = false}) {
-    return TextField(
-      controller: controller,
-      obscureText: obscure,
-      style: const TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: const TextStyle(color: Colors.white70),
-        filled: true,
-        fillColor: Colors.white12,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Container(
+          width: 350,
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Colors.grey[850],
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Create Account',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 24),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: const Text(
+                  "Already have an account? Log in",
+                  style: TextStyle(
+                    color: Colors.amber,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
