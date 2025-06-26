@@ -93,6 +93,18 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
+                  onPressed: () {},
+                  child: const Text('Log in'),
+                ),
+              ),
+              const SizedBox(height: 20),
               const SizedBox(height: 12),
               GestureDetector(
                 onTap: () {
@@ -238,6 +250,19 @@ class SignUpScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                  ),
+                  onPressed: () {},
+                  child: const Text('Sign up'),
+                ),
+              ),
+
 
               const SizedBox(height: 12),
               GestureDetector(
