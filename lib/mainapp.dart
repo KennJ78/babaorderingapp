@@ -17,7 +17,6 @@ class RamenApp extends StatelessWidget {
   }
 }
 
-// MainScreen with Static BottomNavigationBar
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
 
@@ -26,27 +25,27 @@ class MainScreen extends StatelessWidget {
     return Scaffold(
       body: const HomeScreen(),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1,  // Highlight the Products icon (index 1)
-        onTap: null,       // Disable tap functionality
-        selectedItemColor: Colors.red[600],  // Selected item color
-        unselectedItemColor: Colors.grey,   // Unselected item color
+        currentIndex: 1,
+        onTap: null,
+        selectedItemColor: Colors.red[600],
+        unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),           // 🏠 Home icon
-            label: 'Home',                    // 🏷 Label: Home
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.store),          // 🏬 Products icon
-            label: 'Products',                // 🏷 Label: Products
+            icon: Icon(Icons.store),
+            label: 'Products',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),   // 📄 Orders icon
-            label: 'Orders',                  // 🏷 Label: Orders
+            icon: Icon(Icons.receipt_long),
+            label: 'Orders',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),         // 👤 Profile icon
-            label: 'Profile',                 // 🏷 Label: Profile
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
       ),
@@ -54,12 +53,22 @@ class MainScreen extends StatelessWidget {
   }
 }
 
-// Home screen (your existing screen)
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final products = [
+      {'name': 'Socket', 'price': '₱299', 'sold': '2.1k', 'image': 'assets/images/socket.jpg'},
+      {'name': 'Longnose', 'price': '₱450', 'sold': '1.8k', 'image': 'assets/images/longnose.jpg'},
+      {'name': 'Switch', 'price': '₱799', 'sold': '3.2k', 'image': 'assets/images/switch.jpg'},
+      {'name': 'Wires', 'price': '₱1,250', 'sold': '950', 'image': 'assets/images/wires.jpg'},
+      {'name': 'Measuring Tape', 'price': '₱899', 'sold': '1.5k', 'image': 'assets/images/measuringtape.jpg'},
+      {'name': 'Bulb', 'price': '₱650', 'sold': '2.7k', 'image': 'assets/images/bulb.jpg'},
+      {'name': 'Circuit Breakers', 'price': '₱1,499', 'sold': '890', 'image': 'assets/images/circuitbreakers.jpg'},
+      {'name': 'Pliers', 'price': '₱399', 'sold': '1.9k', 'image': 'assets/images/pliers.jpg'},
+    ];
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
@@ -90,7 +99,6 @@ class HomeScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Category buttons
             Wrap(
               spacing: 12,
               runSpacing: 12,
@@ -103,35 +111,22 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            // Product cards
             Expanded(
               child: GridView.builder(
+                itemCount: products.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
-                  childAspectRatio: 0.8,
+                  childAspectRatio: 0.7,
                 ),
-                itemCount: 8, // Number of product cards
                 itemBuilder: (context, index) {
-                  // Different prices and sold counts for variety
-                  final prices = ['₱299', '₱450', '₱799', '₱1,250', '₱899', '₱650', '₱1,499', '₱399'];
-                  final soldCounts = ['2.1k', '1.8k', '3.2k', '950', '1.5k', '2.7k', '890', '1.9k'];
-                  final productNames = [
-                    'Name ng Tinda',
-                    'Name ng Tinda',
-                    'Name ng Tinda',
-                    'Name ng Tinda',
-                    'Name ng Tinda',
-                    'Name ng Tinda',
-                    'Name ng Tinda',
-                    'Name ng Tinda'
-                  ];
-
+                  final product = products[index];
                   return ProductCard(
-                    productName: productNames[index],
-                    price: prices[index],
-                    soldCount: soldCounts[index],
+                    productName: product['name']!,
+                    price: product['price']!,
+                    soldCount: product['sold']!,
+                    imagePath: product['image']!,
                   );
                 },
               ),
@@ -174,130 +169,112 @@ class ProductCard extends StatelessWidget {
   final String productName;
   final String price;
   final String soldCount;
+  final String imagePath;
 
   const ProductCard({
     super.key,
     required this.productName,
     required this.price,
     required this.soldCount,
+    required this.imagePath,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+    return SizedBox(
+      height: 220,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+          border: Border.all(
+            color: Colors.grey.withOpacity(0.1),
+            width: 1,
           ),
-        ],
-        border: Border.all(
-          color: Colors.grey.withOpacity(0.1),
-          width: 1,
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Product image area
-          Expanded(
-            flex: 3,
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
+              ),
+              child: AspectRatio(
+                aspectRatio: 1.3,
+                child: Container(
+                  color: Colors.grey[200],
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.grey[200]!,
-                    Colors.grey[100]!,
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      productName,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey[800],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          price,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red[600],
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Icon(Icons.star, size: 16, color: Colors.amber[600]),
+                            const SizedBox(width: 2),
+                            Text(
+                              '4.5',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Text(
+                      '$soldCount sold',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.grey[500],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              child: Center(
-                child: Icon(
-                  Icons.image,
-                  size: 40,
-                  color: Colors.grey[400],
-                ),
-              ),
             ),
-          ),
-          // Product details area
-          Expanded(
-            flex: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Product name
-                  Text(
-                    productName,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey[800],
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  // Price and rating row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        price,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red[600],
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.star,
-                            size: 16,
-                            color: Colors.amber[600],
-                          ),
-                          const SizedBox(width: 2),
-                          Text(
-                            '4.5',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  // Sold count
-                  Text(
-                    '$soldCount sold',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.grey[500],
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
