@@ -12,11 +12,49 @@ class RamenApp extends StatelessWidget {
     return MaterialApp(
       title: 'BABA App',
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+      home: const MainScreen(),
     );
   }
 }
 
+// MainScreen with Static BottomNavigationBar
+class MainScreen extends StatelessWidget {
+  const MainScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: const HomeScreen(),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 1,  // Highlight the Products icon (index 1)
+        onTap: null,       // Disable tap functionality
+        selectedItemColor: Colors.red[600],  // Selected item color
+        unselectedItemColor: Colors.grey,   // Unselected item color
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),           // 🏠 Home icon
+            label: 'Home',                    // 🏷 Label: Home
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.store),          // 🏬 Products icon
+            label: 'Products',                // 🏷 Label: Products
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt_long),   // 📄 Orders icon
+            label: 'Orders',                  // 🏷 Label: Orders
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),         // 👤 Profile icon
+            label: 'Profile',                 // 🏷 Label: Profile
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Home screen (your existing screen)
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
