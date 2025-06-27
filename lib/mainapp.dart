@@ -64,6 +64,40 @@ class HomeScreen extends StatelessWidget {
                 CategoryButton(label: 'Circuit Breaker'),
               ],
             ),
+            const SizedBox(height: 24),
+            // Product cards
+            Expanded(
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 0.8,
+                ),
+                itemCount: 8, // Number of product cards
+                itemBuilder: (context, index) {
+                  // Different prices and sold counts for variety
+                  final prices = ['₱299', '₱450', '₱799', '₱1,250', '₱899', '₱650', '₱1,499', '₱399'];
+                  final soldCounts = ['2.1k', '1.8k', '3.2k', '950', '1.5k', '2.7k', '890', '1.9k'];
+                  final productNames = [
+                    'Name ng Tinda',
+                    'Name ng Tinda',
+                    'Name ng Tinda',
+                    'Name ng Tinda',
+                    'Name ng Tinda',
+                    'Name ng Tinda',
+                    'Name ng Tinda',
+                    'Name ng Tinda'
+                  ];
+
+                  return ProductCard(
+                    productName: productNames[index],
+                    price: prices[index],
+                    soldCount: soldCounts[index],
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -94,6 +128,139 @@ class CategoryButton extends StatelessWidget {
       ),
       onPressed: () {},
       child: Text(label),
+    );
+  }
+}
+
+class ProductCard extends StatelessWidget {
+  final String productName;
+  final String price;
+  final String soldCount;
+
+  const ProductCard({
+    super.key,
+    required this.productName,
+    required this.price,
+    required this.soldCount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.1),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Product image area
+          Expanded(
+            flex: 3,
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.grey[200]!,
+                    Colors.grey[100]!,
+                  ],
+                ),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.image,
+                  size: 40,
+                  color: Colors.grey[400],
+                ),
+              ),
+            ),
+          ),
+          // Product details area
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Product name
+                  Text(
+                    productName,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[800],
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  // Price and rating row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        price,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red[600],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.star,
+                            size: 16,
+                            color: Colors.amber[600],
+                          ),
+                          const SizedBox(width: 2),
+                          Text(
+                            '4.5',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  // Sold count
+                  Text(
+                    '$soldCount sold',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey[500],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
