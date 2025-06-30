@@ -154,16 +154,16 @@ class CategoryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        style: ElevatedButton.styleFrom(
+      style: ElevatedButton.styleFrom(
         foregroundColor: isSelected ? Colors.white : Colors.black,
         backgroundColor: isSelected ? Colors.red[600] : Colors.grey[300],
         shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-    ),
-    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-    ),
-    onPressed: () {},
-    child: Text(label),
+          borderRadius: BorderRadius.circular(24),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      ),
+      onPressed: () {},
+      child: Text(label),
     );
   }
 }
@@ -302,6 +302,14 @@ class ProductDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(productName),
         backgroundColor: Colors.red[600],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shopping_cart, color: Colors.white),
+            onPressed: () {
+
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -364,7 +372,7 @@ class ProductDetailScreen extends StatelessWidget {
                 const SizedBox(width: 8),
                 const Expanded(
                   child: Text(
-                    '"Very durable and worth the price! I’ve been using this for months now with no issues. Highly recommended!"',
+                    '"Very durable and worth the price! I\'ve been using this for months now with no issues. Highly recommended!"',
                     style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
                   ),
                 ),
@@ -393,6 +401,51 @@ class ProductDetailScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 24),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        color: Colors.white,
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {
+
+                },
+                icon: const Icon(Icons.add_shopping_cart, color: Colors.red),
+                label: const Text('Add to Cart', style: TextStyle(color: Colors.red)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red[50],
+                  foregroundColor: Colors.red,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {
+
+                },
+                icon: const Icon(Icons.flash_on, color: Colors.white),
+                label: const Text('Buy Now', style: TextStyle(color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red[600],
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
