@@ -31,22 +31,10 @@ class MainScreen extends StatelessWidget {
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.store),
-            label: 'Products',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: 'Orders',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Products'),
+          BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Orders'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
@@ -122,11 +110,26 @@ class HomeScreen extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   final product = products[index];
-                  return ProductCard(
-                    productName: product['name']!,
-                    price: product['price']!,
-                    soldCount: product['sold']!,
-                    imagePath: product['image']!,
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ProductDetailScreen(
+                            productName: product['name']!,
+                            price: product['price']!,
+                            soldCount: product['sold']!,
+                            imagePath: product['image']!,
+                          ),
+                        ),
+                      );
+                    },
+                    child: ProductCard(
+                      productName: product['name']!,
+                      price: product['price']!,
+                      soldCount: product['sold']!,
+                      imagePath: product['image']!,
+                    ),
                   );
                 },
               ),
@@ -272,6 +275,81 @@ class ProductCard extends StatelessWidget {
                   ],
                 ),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProductDetailScreen extends StatelessWidget {
+  final String productName;
+  final String price;
+  final String soldCount;
+  final String imagePath;
+
+  const ProductDetailScreen({
+    super.key,
+    required this.productName,
+    required this.price,
+    required this.soldCount,
+    required this.imagePath,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.red[600],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image Placeholder
+            Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  imagePath,
+                  height: 250,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Product Name Placeholder
+            Container(
+              width: double.infinity,
+              height: 24,
+              color: Colors.grey[300],
+            ),
+            const SizedBox(height: 16),
+
+            // Price Placeholder
+            Container(
+              width: 100,
+              height: 20,
+              color: Colors.grey[300],
+            ),
+            const SizedBox(height: 16),
+
+            // Sold Count Placeholder
+            Container(
+              width: 60,
+              height: 18,
+              color: Colors.grey[300],
+            ),
+            const SizedBox(height: 24),
+
+            // Description Placeholder
+            Container(
+              width: double.infinity,
+              height: 100,
+              color: Colors.grey[300],
             ),
           ],
         ),
