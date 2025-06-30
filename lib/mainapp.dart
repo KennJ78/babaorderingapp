@@ -61,7 +61,7 @@ class HomeScreen extends StatelessWidget {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
         child: AppBar(
-          backgroundColor: Colors.grey[900],
+          backgroundColor: Colors.red[600],
           automaticallyImplyLeading: false,
           title: Padding(
             padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
@@ -69,16 +69,16 @@ class HomeScreen extends StatelessWidget {
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                 hintText: 'Search menu items...',
-                hintStyle: const TextStyle(color: Colors.white70),
-                prefixIcon: const Icon(Icons.search, color: Colors.white),
+                hintStyle: const TextStyle(color: Colors.black87),
+                prefixIcon: const Icon(Icons.search, color: Colors.black),
                 filled: true,
-                fillColor: Colors.grey[800],
+                fillColor: Colors.white,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                   borderSide: BorderSide.none,
                 ),
               ),
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.black),
             ),
           ),
         ),
@@ -282,6 +282,7 @@ class ProductCard extends StatelessWidget {
     );
   }
 }
+
 class ProductDetailScreen extends StatelessWidget {
   final String productName;
   final String price;
@@ -300,14 +301,16 @@ class ProductDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(productName),
         backgroundColor: Colors.red[600],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_sharp, color: Colors.white60, size: 30),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(productName, style: const TextStyle(color: Colors.white)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.shopping_cart, color: Colors.white),
-            onPressed: () {
-
-            },
+            icon:  Icon(Icons.shopping_cart_outlined, color: Colors.yellow[500]),
+            onPressed: () {},
           ),
         ],
       ),
@@ -359,11 +362,7 @@ class ProductDetailScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 12),
-
-            // Review 1
-            Row(
-              children: List.generate(5, (index) => const Icon(Icons.star, color: Colors.amber, size: 18)),
-            ),
+            Row(children: List.generate(5, (index) => const Icon(Icons.star, color: Colors.amber, size: 18))),
             const SizedBox(height: 6),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -378,13 +377,8 @@ class ProductDetailScreen extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 20),
-
-            // Review 2
-            Row(
-              children: List.generate(5, (index) => const Icon(Icons.star, color: Colors.amber, size: 18)),
-            ),
+            Row(children: List.generate(5, (index) => const Icon(Icons.star, color: Colors.amber, size: 18))),
             const SizedBox(height: 6),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -399,7 +393,6 @@ class ProductDetailScreen extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 24),
           ],
         ),
@@ -411,9 +404,7 @@ class ProductDetailScreen extends StatelessWidget {
           children: [
             Expanded(
               child: ElevatedButton.icon(
-                onPressed: () {
-
-                },
+                onPressed: () {},
                 icon: const Icon(Icons.add_shopping_cart, color: Colors.red),
                 label: const Text('Add to Cart', style: TextStyle(color: Colors.red)),
                 style: ElevatedButton.styleFrom(
@@ -430,9 +421,7 @@ class ProductDetailScreen extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: ElevatedButton.icon(
-                onPressed: () {
-
-                },
+                onPressed: () {},
                 icon: const Icon(Icons.flash_on, color: Colors.white),
                 label: const Text('Buy Now', style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
