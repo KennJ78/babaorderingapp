@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const RamenApp());
+  runApp(const MyApp());
 }
 
-class RamenApp extends StatelessWidget {
-  const RamenApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -154,16 +154,16 @@ class CategoryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(
+        style: ElevatedButton.styleFrom(
         foregroundColor: isSelected ? Colors.white : Colors.black,
         backgroundColor: isSelected ? Colors.red[600] : Colors.grey[300],
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      ),
-      onPressed: () {},
-      child: Text(label),
+        borderRadius: BorderRadius.circular(24),
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    ),
+    onPressed: () {},
+    child: Text(label),
     );
   }
 }
@@ -282,7 +282,6 @@ class ProductCard extends StatelessWidget {
     );
   }
 }
-
 class ProductDetailScreen extends StatelessWidget {
   final String productName;
   final String price;
@@ -301,14 +300,14 @@ class ProductDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(productName),
         backgroundColor: Colors.red[600],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image Placeholder
             Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
@@ -319,38 +318,81 @@ class ProductDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
-
-            // Product Name Placeholder
-            Container(
-              width: double.infinity,
-              height: 24,
-              color: Colors.grey[300],
-            ),
             const SizedBox(height: 16),
-
-            // Price Placeholder
-            Container(
-              width: 100,
-              height: 20,
-              color: Colors.grey[300],
-            ),
-            const SizedBox(height: 16),
-
-            // Sold Count Placeholder
-            Container(
-              width: 60,
-              height: 18,
-              color: Colors.grey[300],
+            Text(
+              productName,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 24),
-
-            // Description Placeholder
-            Container(
-              width: double.infinity,
-              height: 100,
-              color: Colors.grey[300],
+            Text(
+              'Price: $price',
+              style: TextStyle(fontSize: 18, color: Colors.red[600], fontWeight: FontWeight.w600),
             ),
+            const SizedBox(height: 24),
+            Text(
+              'Sold: $soldCount',
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Description',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'This is a high-quality electrical product, ideal for both residential and commercial use. Designed for durability and efficiency.',
+              style: TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 24),
+            const Divider(),
+            const SizedBox(height: 16),
+            const Text(
+              'Customer Reviews',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 12),
+
+            // Review 1
+            Row(
+              children: List.generate(5, (index) => const Icon(Icons.star, color: Colors.amber, size: 18)),
+            ),
+            const SizedBox(height: 6),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.person, color: Colors.grey[700]),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text(
+                    '"Very durable and worth the price! I’ve been using this for months now with no issues. Highly recommended!"',
+                    style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            // Review 2
+            Row(
+              children: List.generate(5, (index) => const Icon(Icons.star, color: Colors.amber, size: 18)),
+            ),
+            const SizedBox(height: 6),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.person, color: Colors.grey[700]),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text(
+                    '"Fast delivery and great customer service. Will definitely order again!"',
+                    style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 24),
           ],
         ),
       ),
