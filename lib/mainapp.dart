@@ -760,7 +760,15 @@ class _CartScreenState extends State<CartScreen> {
               height: 48,
               child: ElevatedButton(
                 onPressed: () {
-                  // Add checkout logic
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CheckoutScreen(
+                        totalAmount: total,
+                        cartItems: cartProducts.where((p) => p['checked'] == true).toList(),
+                      ),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red[600],
@@ -779,6 +787,123 @@ class _CartScreenState extends State<CartScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class CheckoutScreen extends StatefulWidget {
+  final double totalAmount;
+  final List<Map<String, dynamic>> cartItems;
+
+  const CheckoutScreen({
+    super.key,
+    required this.totalAmount,
+    required this.cartItems,
+  });
+
+  @override
+  State<CheckoutScreen> createState() => _CheckoutScreenState();
+}
+
+class _CheckoutScreenState extends State<CheckoutScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Empty initialization
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        backgroundColor: Colors.red[600],
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Checkout',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Empty checkout content
+            const SizedBox(height: 32),
+            Center(
+              child: Column(
+                children: [
+                  Icon(Icons.shopping_cart_outlined, size: 64, color: Colors.grey[400]),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Checkout Page',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Content will be added here',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[500],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 32),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: ElevatedButton(
+          onPressed: () {
+            // Placeholder action
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red[600],
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: const Text(
+            'Place Order',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ),
     );
