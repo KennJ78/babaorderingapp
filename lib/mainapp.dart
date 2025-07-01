@@ -463,11 +463,42 @@ class ProductDetailScreen extends StatelessWidget {
   }
 }
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
 
   @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  final List<Map<String, dynamic>> cartProducts = [
+    {
+      'name': 'Socket',
+      'price': '₱299',
+      'image': 'assets/images/socket.jpg',
+      'qty': 2,
+      'checked': false,
+    },
+    {
+      'name': 'Switch',
+      'price': '₱799',
+      'image': 'assets/images/switch.jpg',
+      'qty': 1,
+      'checked': false,
+    },
+    {
+      'name': 'Bulb',
+      'price': '₱650',
+      'image': 'assets/images/bulb.jpg',
+      'qty': 3,
+      'checked': false,
+    },
+  ];
+
+  @override
   Widget build(BuildContext context) {
+    final bool isEmpty = cartProducts.isEmpty;
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -491,9 +522,9 @@ class CartScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
+      body: isEmpty
+          ? Column(
         children: [
-          // Empty cart illustration
           Expanded(
             child: Center(
               child: Column(
@@ -550,69 +581,163 @@ class CartScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Bottom section with total and checkout button
-          Container(
-            padding: const EdgeInsets.all(20),
+        ],
+      )
+          : ListView.separated(
+        padding: const EdgeInsets.all(16),
+        itemCount: cartProducts.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 16),
+        itemBuilder: (context, index) {
+          final product = cartProducts[index];
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
             decoration: BoxDecoration(
               color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 1,
-                  blurRadius: 10,
-                  offset: const Offset(0, -2),
+                  color: Colors.black.withOpacity(0.07),
+                  blurRadius: 18,
+                  offset: const Offset(0, 8),
                 ),
               ],
+              border: Border.all(
+                color: (product['checked'] ?? false) ? Colors.red[200]! : Colors.grey[200]!,
+                width: (product['checked'] ?? false) ? 2 : 1,
+              ),
             ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Total:',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Checkbox(
+                    value: product['checked'] ?? false,
+                    activeColor: Colors.red[600],
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                    onChanged: (bool? value) {
+                      setState(() {
+                        product['checked'] = value ?? false;
+                      });
+                    },
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.red[100]!, width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.red.withOpacity(0.08),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    Text(
-                      '₱0.00',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red[600],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[300],
-                      foregroundColor: Colors.grey[600],
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: const Text(
-                      'Proceed to Checkout',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: Image.asset(
+                        product['image']!,
+                        width: 72,
+                        height: 72,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 18),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          product['name']!,
+                          style: const TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black87,
+                            letterSpacing: 0.2,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          product['price']!,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.red[600],
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.red[50],
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        InkWell(
+                          borderRadius: BorderRadius.circular(20),
+                          onTap: () {
+                            setState(() {
+                              if (product['qty'] > 1) {
+                                product['qty']--;
+                              }
+                            });
+                          },
+                          child: Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: Colors.red[100],
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.remove, size: 20, color: Colors.red),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            '${product['qty']}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          borderRadius: BorderRadius.circular(20),
+                          onTap: () {
+                            setState(() {
+                              product['qty']++;
+                            });
+                          },
+                          child: Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: Colors.red[400],
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.add, size: 20, color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
