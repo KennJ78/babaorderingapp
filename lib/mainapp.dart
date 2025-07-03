@@ -31,7 +31,6 @@ class MainScreen extends StatelessWidget {
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Products'),
           BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Orders'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
@@ -1136,72 +1135,47 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void _placeOrder(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-
-      // Show success dialog
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            title: Row(
-              children: [
-                Icon(Icons.check_circle, color: Colors.green[600], size: 28),
-                const SizedBox(width: 8),
-                const Text('Order Placed!'),
-              ],
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Thank you for your order, $_name!'),
-                const SizedBox(height: 8),
-                Text('Your order will be delivered to:'),
-                Text('$_street, $_city $_postalCode'),
-                const SizedBox(height: 8),
-                Text('Delivery: $_deliveryOption'),
-                const SizedBox(height: 8),
-                Text('Payment: Cash on Delivery'),
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.green[50],
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.green[200]!),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.info_outline, color: Colors.green[600], size: 20),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'You will receive a confirmation SMS shortly.',
-                          style: TextStyle(
-                            color: Colors.green[700],
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).popUntil((route) => route.isFirst);
-                },
-                child: const Text('Continue Shopping'),
-              ),
-            ],
-          );
-        },
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => OrderConfirmationScreen(
+            name: _name,
+            street: _street,
+            city: _city,
+            postalCode: _postalCode,
+            deliveryOption: _deliveryOption,
+          ),
+        ),
       );
     }
+  }
+}
+
+class OrderConfirmationScreen extends StatelessWidget {
+  final String name;
+  final String street;
+  final String city;
+  final String postalCode;
+  final String deliveryOption;
+
+  const OrderConfirmationScreen({
+    super.key,
+    required this.name,
+    required this.street,
+    required this.city,
+    required this.postalCode,
+    required this.deliveryOption,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.red[600],
+        title: const Text('Order Confirmation', style: TextStyle(color: Colors.white)),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      
+    );
   }
 }
