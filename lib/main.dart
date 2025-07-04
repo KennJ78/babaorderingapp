@@ -25,7 +25,16 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomeScreen(),
         '/cart': (context) => const CartScreen(),
         '/checkout': (context) => CheckoutScreen(cartItems: [], totalAmount: 0),
-        '/order_confirmation': (context) => const OrderConfirmationScreen(),
+        '/order_confirmation': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
+          return OrderConfirmationScreen(
+            name: args?['name'] ?? 'Customer',
+            street: args?['street'] ?? '',
+            city: args?['city'] ?? '',
+            postalCode: args?['postalCode'] ?? '',
+            deliveryOption: args?['deliveryOption'] ?? 'Standard Delivery',
+          );
+        },
       },
     );
   }

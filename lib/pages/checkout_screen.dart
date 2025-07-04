@@ -331,10 +331,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void _placeOrder(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+
+      // Debug print to see what values are being passed
+      print('CheckoutScreen - Name: $_name');
+      print('CheckoutScreen - Street: $_street');
+      print('CheckoutScreen - City: $_city');
+      print('CheckoutScreen - Postal Code: $_postalCode');
+      print('CheckoutScreen - Delivery Option: $_deliveryOption');
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => const OrderConfirmationScreen(),
+          builder: (_) => OrderConfirmationScreen(
+            name: _name,
+            street: _street,
+            city: _city,
+            postalCode: _postalCode,
+            deliveryOption: _deliveryOption,
+          ),
         ),
       );
     }
