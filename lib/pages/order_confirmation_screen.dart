@@ -6,6 +6,7 @@ class OrderConfirmationScreen extends StatelessWidget {
   final String city;
   final String postalCode;
   final String deliveryOption;
+  final String orderReference;
 
   const OrderConfirmationScreen({
     super.key,
@@ -14,6 +15,7 @@ class OrderConfirmationScreen extends StatelessWidget {
     required this.city,
     required this.postalCode,
     required this.deliveryOption,
+    required this.orderReference,
   });
 
   @override
@@ -24,6 +26,7 @@ class OrderConfirmationScreen extends StatelessWidget {
     final displayCity = city.isEmpty ? 'City' : city;
     final displayPostalCode = postalCode.isEmpty ? '12345' : postalCode;
     final displayDeliveryOption = deliveryOption.isEmpty ? 'Standard Delivery' : deliveryOption;
+    final displayOrderReference = orderReference.isEmpty ? _generateOrderReference() : orderReference;
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -109,6 +112,16 @@ class OrderConfirmationScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
+                  // Order Reference Card
+                  _buildInfoCard(
+                    icon: Icons.receipt_long,
+                    title: 'Order Reference',
+                    content: displayOrderReference,
+                    color: Colors.purple[600]!,
+                  ),
+
+                  const SizedBox(height: 16),
+
                   // Delivery Information Card
                   _buildInfoCard(
                     icon: Icons.location_on,
@@ -148,7 +161,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                         // Navigate to home screen and clear the navigation stack
                         Navigator.of(context).pushNamedAndRemoveUntil(
                           '/home',
-                          (Route<dynamic> route) => false,
+                              (Route<dynamic> route) => false,
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -249,5 +262,15 @@ class OrderConfirmationScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _generateOrderReference() {
+    final now = DateTime.now();
+    final year = now.year.toString().substring(2); // Last 2 digits of year
+    final month = now.month.toString().padLeft(2, '0');
+    final day = now.day.toString().padLeft(2, '0');
+    final random = (1000 + (DateTime.now().millisecondsSinceEpoch % 9000)).toString();
+
+    return 'BABA-$year$month$day-$random';
   }
 } 

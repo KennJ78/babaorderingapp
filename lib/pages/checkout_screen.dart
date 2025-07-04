@@ -332,12 +332,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
+      // Generate order reference
+      final orderReference = _generateOrderReference();
+
       // Debug print to see what values are being passed
       print('CheckoutScreen - Name: $_name');
       print('CheckoutScreen - Street: $_street');
       print('CheckoutScreen - City: $_city');
       print('CheckoutScreen - Postal Code: $_postalCode');
       print('CheckoutScreen - Delivery Option: $_deliveryOption');
+      print('CheckoutScreen - Order Reference: $orderReference');
 
       Navigator.pushReplacement(
         context,
@@ -348,9 +352,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             city: _city,
             postalCode: _postalCode,
             deliveryOption: _deliveryOption,
+            orderReference: orderReference,
           ),
         ),
       );
     }
+  }
+
+  String _generateOrderReference() {
+    final now = DateTime.now();
+    final year = now.year.toString().substring(2); // Last 2 digits of year
+    final month = now.month.toString().padLeft(2, '0');
+    final day = now.day.toString().padLeft(2, '0');
+    final random = (1000 + (DateTime.now().millisecondsSinceEpoch % 9000)).toString();
+
+    return 'BABA-$year$month$day-$random';
   }
 } 
