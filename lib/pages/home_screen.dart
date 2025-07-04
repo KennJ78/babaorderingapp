@@ -114,6 +114,10 @@ class HomeScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
         onTap: (index) {
+          if (index == 2) {
+            // Orders tab
+            _showOrderHistory(context);
+          }
           // TODO: Implement navigation for other tabs
         },
         selectedItemColor: Colors.red[600],
@@ -126,6 +130,47 @@ class HomeScreen extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
+    );
+  }
+
+  void _showOrderHistory(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.receipt_long, color: Colors.red[600]),
+              const SizedBox(width: 8),
+              const Text('Order History'),
+            ],
+          ),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Your order history will appear here.',
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Order references will be displayed for easy tracking.',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Close',
+                style: TextStyle(color: Colors.red[600]),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 } 
