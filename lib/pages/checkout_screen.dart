@@ -272,7 +272,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                       ),
                       Text(
-                        'Qty: [200~[200~${item['qty']}',
+                        'Qty:${item['qty']}',
                         style: TextStyle(
                           color: Colors.grey[600],
                           fontSize: 12,

@@ -136,6 +136,49 @@ class OrderConfirmationScreen extends StatelessWidget {
                     content: 'Cash on Delivery',
                     color: Colors.green[600]!,
                   ),
+
+                  const SizedBox(height: 30),
+
+                  // Continue Shopping Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Navigate to home screen and clear the navigation stack
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/home',
+                          (Route<dynamic> route) => false,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red[600],
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 4,
+                        shadowColor: Colors.red.withOpacity(0.3),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.shopping_cart,
+                            size: 24,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Continue Shopping',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
