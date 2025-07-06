@@ -3,6 +3,7 @@ import 'product_detail_screen.dart';
 import 'cart_screen.dart';
 import 'category_button.dart';
 import 'product_card.dart';
+import 'order_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -114,9 +115,12 @@ class HomeScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
         onTap: (index) {
-          if (index == 2) {
-            // Orders tab
-            _showOrderHistory(context);
+          if (index == 1) {
+            // Orders tab (now at index 1 since we removed Home)
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const OrderScreen()),
+            );
           }
           // TODO: Implement navigation for other tabs
         },
@@ -124,7 +128,6 @@ class HomeScreen extends StatelessWidget {
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Products'),
           BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Orders'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
@@ -133,44 +136,5 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _showOrderHistory(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.receipt_long, color: Colors.red[600]),
-              const SizedBox(width: 8),
-              const Text('Order History'),
-            ],
-          ),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Your order history will appear here.',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Order references will be displayed for easy tracking.',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                'Close',
-                style: TextStyle(color: Colors.red[600]),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+
 } 
