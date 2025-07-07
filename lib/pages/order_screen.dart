@@ -113,6 +113,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Widget _buildOrderCard(Order order) {
     final totalAmount = order.totalAmount + order.deliveryFee;
+    final statusColor = _getStatusColor(order.status);
     
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -158,15 +159,17 @@ class _OrderScreenState extends State<OrderScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(order.status).withOpacity(0.1),
+                    color: statusColor.withOpacity(0.08),
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: statusColor, width: 1.2),
                   ),
                   child: Text(
                     order.status,
                     style: TextStyle(
-                      color: _getStatusColor(order.status),
+                      color: statusColor,
                       fontSize: 12,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ),
@@ -205,20 +208,18 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-
-
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'pending':
-        return Colors.orange;
+        return const Color(0xFFFFB300); 
       case 'processing':
-        return Colors.blue;
+        return const Color(0xFF1976D2); 
       case 'shipped':
-        return Colors.purple;
+        return const Color(0xFF8E24AA); 
       case 'delivered':
-        return Colors.green;
+        return const Color(0xFF43A047); 
       case 'cancelled':
-        return Colors.red;
+        return const Color(0xFFD32F2F); 
       default:
         return Colors.grey;
     }
