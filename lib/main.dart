@@ -4,6 +4,7 @@ import 'pages/product_detail_screen.dart';
 import 'pages/cart_screen.dart';
 import 'pages/checkout_screen.dart';
 import 'pages/order_confirmation_screen.dart';
+import 'pages/order_screen.dart';
 import 'pages/LoginandSignup.dart';
 
 void main() {
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const SignUpScreen(),
         '/home': (context) => const HomeScreen(),
         '/cart': (context) => const CartScreen(),
+        '/orders': (context) => const OrderScreen(),
         '/checkout': (context) => CheckoutScreen(cartItems: [], totalAmount: 0),
         '/order_confirmation': (context) {
           final args = ModalRoute.of(context)!.settings.arguments as Map<String, String>?;
