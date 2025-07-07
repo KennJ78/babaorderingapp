@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'order_confirmation_screen.dart';
+import '../models/order.dart';
+import '../services/order_service.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final List<Map<String, dynamic>> cartItems;
@@ -328,12 +330,33 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  void _placeOrder(BuildContext context) {
+  void _placeOrder(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
       // Generate order reference
       final orderReference = _generateOrderReference();
+      final deliveryFee = _deliveryOption == 'Standard Delivery' ? 100.0 : 150.0;
+      final totalWithDelivery = widget.totalAmount + deliveryFee;
+
+      // Create order object
+      final order = Order(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        orderReference: orderReference,
+        customerName: _name,
+        street: _street,
+        city: _city,
+        postalCode: _postalCode,
+        phone: _phone,
+        deliveryOption: _deliveryOption,
+        totalAmount: widget.totalAmount,
+        deliveryFee: deliveryFee,
+        items: widget.cartItems,
+        orderDate: DateTime.now(),
+      );
+
+      // Save order to storage
+      await OrderService.addOrder(order);
 
       // Debug print to see what values are being passed
       print('CheckoutScreen - Name: $_name');
