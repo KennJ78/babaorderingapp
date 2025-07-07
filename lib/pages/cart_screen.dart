@@ -8,8 +8,10 @@ class CartScreen extends StatefulWidget {
   State<CartScreen> createState() => _CartScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
-  final List<Map<String, dynamic>> cartProducts = [
+// Global cart service that can be accessed from any screen
+class CartService {
+  // Static cart list that can be accessed from other screens
+  static final List<Map<String, dynamic>> cartProducts = [
     {
       'name': 'Socket',
       'price': '₱299',
@@ -33,11 +35,34 @@ class _CartScreenState extends State<CartScreen> {
     },
   ];
 
+  // Method to add product to cart
+  static void addToCart(String name, String price, String image) {
+    // Check if product already exists in cart
+    final existingProductIndex = cartProducts.indexWhere((product) => product['name'] == name);
+    
+    if (existingProductIndex != -1) {
+      // If product exists, increase quantity
+      cartProducts[existingProductIndex]['qty']++;
+    } else {
+      // If product doesn't exist, add new product
+      cartProducts.add({
+        'name': name,
+        'price': price,
+        'image': image,
+        'qty': 1,
+        'checked': false,
+      });
+    }
+  }
+}
+
+class _CartScreenState extends State<CartScreen> {
+
   @override
   Widget build(BuildContext context) {
-    final bool isEmpty = cartProducts.isEmpty;
+    final bool isEmpty = CartService.cartProducts.isEmpty;
 
-    double total = cartProducts
+    double total = CartService.cartProducts
         .where((p) => p['checked'] == true)
         .fold(0.0, (total, p) {
       final price = double.tryParse(p['price'].toString().replaceAll('₱', '')) ?? 0.0;
@@ -123,10 +148,10 @@ class _CartScreenState extends State<CartScreen> {
       )
           : ListView.separated(
         padding: const EdgeInsets.all(16),
-        itemCount: cartProducts.length,
+        itemCount: CartService.cartProducts.length,
         separatorBuilder: (_, __) => const SizedBox(height: 16),
         itemBuilder: (context, index) {
-          final product = cartProducts[index];
+          final product = CartService.cartProducts[index];
           return Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -261,7 +286,7 @@ class _CartScreenState extends State<CartScreen> {
           );
         },
       ),
-      bottomNavigationBar: cartProducts.isEmpty
+      bottomNavigationBar: CartService.cartProducts.isEmpty
           ? null
           : Container(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
@@ -298,7 +323,7 @@ class _CartScreenState extends State<CartScreen> {
               height: 48,
               child: ElevatedButton(
                 onPressed: () {
-                  final selectedItems = cartProducts.where((p) => p['checked'] == true).toList();
+                  final selectedItems = CartService.cartProducts.where((p) => p['checked'] == true).toList();
                   if (selectedItems.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

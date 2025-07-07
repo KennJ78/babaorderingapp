@@ -128,9 +128,26 @@ class ProductDetailScreen extends StatelessWidget {
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const CartScreen()),
+                  // Add product to cart
+                  CartService.addToCart(productName, price, imagePath);
+                  
+                  // Show success message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('$productName added to cart!'),
+                      backgroundColor: Colors.green,
+                      duration: const Duration(seconds: 2),
+                      action: SnackBarAction(
+                        label: 'View Cart',
+                        textColor: Colors.white,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const CartScreen()),
+                          );
+                        },
+                      ),
+                    ),
                   );
                 },
                 icon: const Icon(Icons.add_shopping_cart, color: Colors.red),
