@@ -17,21 +17,21 @@ class CartService {
       'price': '₱299',
       'image': 'assets/images/socket.jpg',
       'qty': 2,
-      'checked': false,
+      'checked': true,
     },
     {
       'name': 'Switch',
       'price': '₱799',
       'image': 'assets/images/switch.jpg',
       'qty': 1,
-      'checked': false,
+      'checked': true,
     },
     {
       'name': 'Bulb',
       'price': '₱650',
       'image': 'assets/images/bulb.jpg',
       'qty': 3,
-      'checked': false,
+      'checked': true,
     },
   ];
 
@@ -50,7 +50,7 @@ class CartService {
         'price': price,
         'image': image,
         'qty': 1,
-        'checked': false,
+        'checked': true,
       });
     }
   }
@@ -59,13 +59,21 @@ class CartService {
 class _CartScreenState extends State<CartScreen> {
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    setState(() {}); // Refresh cart when returning to this screen
+  }
+
+  @override
   Widget build(BuildContext context) {
     final bool isEmpty = CartService.cartProducts.isEmpty;
 
     double total = CartService.cartProducts
         .where((p) => p['checked'] == true)
         .fold(0.0, (total, p) {
-      final price = double.tryParse(p['price'].toString().replaceAll('₱', '')) ?? 0.0;
+      final price = double.tryParse(
+        p['price'].toString().replaceAll('₱', '').replaceAll(',', '')
+      ) ?? 0.0;
       return total + (price * (p['qty'] ?? 1));
     });
 
