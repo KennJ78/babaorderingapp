@@ -64,6 +64,70 @@ class _CartScreenState extends State<CartScreen> {
     setState(() {}); // Refresh cart when returning to this screen
   }
 
+  void _showDeleteDialog() {
+    final selectedItems = CartService.cartProducts.where((p) => p['checked'] == true).toList();
+    
+    if (selectedItems.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select items to delete'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Items'),
+          content: Text(
+            selectedItems.length == 1 
+              ? 'Are you sure you want to delete this item from your cart?'
+              : 'Are you sure you want to delete ${selectedItems.length} items from your cart?'
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteSelectedItems();
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteSelectedItems() {
+    setState(() {
+      CartService.cartProducts.removeWhere((product) => product['checked'] == true);
+    });
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Items deleted from cart'),
+        backgroundColor: Colors.red[600],
+        action: SnackBarAction(
+          label: 'Undo',
+          textColor: Colors.white,
+          onPressed: () {
+            // TODO: Implement undo functionality if needed
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isEmpty = CartService.cartProducts.isEmpty;
@@ -96,7 +160,9 @@ class _CartScreenState extends State<CartScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_outline, color: Colors.white),
-            onPressed: () {},
+            onPressed: () {
+              _showDeleteDialog();
+            },
           ),
         ],
       ),
