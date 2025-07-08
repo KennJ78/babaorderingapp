@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class CategoryButton extends StatelessWidget {
   final String label;
   final bool isSelected;
+  final VoidCallback? onPressed;
 
   const CategoryButton({
     super.key,
     required this.label,
     this.isSelected = false,
+    this.onPressed,
   });
 
   @override
@@ -21,7 +23,7 @@ class CategoryButton extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       ),
-      onPressed: () {},
+      onPressed: onPressed,
       child: Text(label),
     );
   }
