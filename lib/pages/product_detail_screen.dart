@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'cart_screen.dart';
+import 'checkout_screen.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final String productName;
@@ -152,7 +153,32 @@ class ProductDetailScreen extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  // Create a single item list for buy now
+                  final buyNowItem = {
+                    'name': productName,
+                    'price': price,
+                    'image': imagePath,
+                    'qty': 1,
+                    'checked': true,
+                  };
+                  
+                  // Calculate total amount for single item
+                  final priceValue = double.tryParse(
+                    price.replaceAll('₱', '').replaceAll(',', '')
+                  ) ?? 0.0;
+                  
+                  // Navigate directly to checkout screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CheckoutScreen(
+                        cartItems: [buyNowItem],
+                        totalAmount: priceValue,
+                      ),
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.flash_on, color: Colors.white),
                 label: const Text('Buy Now', style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
