@@ -2,10 +2,26 @@ import 'package:flutter/material.dart';
 
 class User {
   String name;
+  String? username;
   String email;
   String? profileImagePath;
+  String? address;
+  String? city;
+  String? state;
+  String? zipCode;
+  String? phoneNumber;
 
-  User({required this.name, required this.email, this.profileImagePath});
+  User({
+    required this.name, 
+    this.username,
+    required this.email, 
+    this.profileImagePath,
+    this.address,
+    this.city,
+    this.state,
+    this.zipCode,
+    this.phoneNumber,
+  });
 }
 
 class UserProvider extends ChangeNotifier {
@@ -21,6 +37,23 @@ class UserProvider extends ChangeNotifier {
   void setProfileImage(String path) {
     if (_user != null) {
       _user!.profileImagePath = path;
+      notifyListeners();
+    }
+  }
+
+  void updateUserAddress({
+    String? address,
+    String? city,
+    String? state,
+    String? zipCode,
+    String? phoneNumber,
+  }) {
+    if (_user != null) {
+      if (address != null) _user!.address = address;
+      if (city != null) _user!.city = city;
+      if (state != null) _user!.state = state;
+      if (zipCode != null) _user!.zipCode = zipCode;
+      if (phoneNumber != null) _user!.phoneNumber = phoneNumber;
       notifyListeners();
     }
   }
