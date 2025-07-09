@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../models/user.dart';
 import 'cart_screen.dart';
 import 'LoginandSignup.dart' as login_signup;
+import 'edit_profile_screen.dart';
+import 'delivery_address_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -94,12 +96,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _buildProfileOption(
                   icon: Icons.person_outline,
                   title: 'Edit Profile',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProfileScreen(user: user!),
+                      ),
+                    );
+                  },
                 ),
                 _buildProfileOption(
                   icon: Icons.location_on_outlined,
                   title: 'Delivery Address',
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const DeliveryAddressScreen(),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
