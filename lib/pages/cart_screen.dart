@@ -172,16 +172,47 @@ class _CartScreenState extends State<CartScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 120,
-              height: 120,
+              width: 140,
+              height: 140,
               decoration: BoxDecoration(
-                color: Colors.grey[200],
+                color: Colors.grey[100],
                 shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.grey[300]!,
+                  width: 2,
+                  style: BorderStyle.solid,
+                ),
               ),
-              child: Icon(
-                Icons.shopping_cart_outlined,
-                size: 60,
-                color: Colors.grey[400],
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Icon(
+                    Icons.shopping_cart_outlined,
+                    size: 70,
+                    color: Colors.grey[400],
+                  ),
+                  Positioned(
+                    top: 25,
+                    right: 25,
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: Colors.red[100],
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.red[300]!,
+                          width: 1,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.remove,
+                        size: 12,
+                        color: Colors.red[600],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 24),
