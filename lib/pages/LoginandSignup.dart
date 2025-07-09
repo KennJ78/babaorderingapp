@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../models/user.dart';
 
 // In-memory user store
-Map<String, String> _users = {};
+Map<String, Map<String, String>> users = {};
 
 void main() {
   runApp(const MyApp());
@@ -36,7 +38,13 @@ class _LoginScreenState extends State<LoginScreen> {
   void _login() {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
-    if (_users.containsKey(email) && _users[email] == password) {
+    if (users.containsKey(email) && users[email]!['password'] == password) {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      userProvider.setUser(User(
+        name: users[email]!['name']!,
+        email: email,
+        profileImagePath: users[email]!['profileImagePath'],
+      ));
       Navigator.pushReplacementNamed(context, '/home');
     } else {
       setState(() {
@@ -260,13 +268,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
       return;
     }
-    if (_users.containsKey(email)) {
+    if (users.containsKey(email)) {
       setState(() {
         _error = 'Email already registered';
       });
       return;
     }
-    _users[email] = password;
+    users[email] = {
+      'password': password,
+      'name': _nameController.text.trim(),
+      'profileImagePath': '',
+    };
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Account created! Please log in.'), backgroundColor: Colors.green),
