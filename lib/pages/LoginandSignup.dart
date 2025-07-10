@@ -5,6 +5,88 @@ import '../models/user.dart';
 // In-memory user store
 Map<String, Map<String, String>> users = {};
 
+// Validation functions
+class ValidationUtils {
+  static bool isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    return emailRegex.hasMatch(email);
+  }
+
+  static bool isValidPassword(String password) {
+    // Password must be at least 8 characters long
+    if (password.length < 8) return false;
+    
+    // Password must contain at least one uppercase letter
+    if (!password.contains(RegExp(r'[A-Z]'))) return false;
+    
+    // Password must contain at least one lowercase letter
+    if (!password.contains(RegExp(r'[a-z]'))) return false;
+    
+    // Password must contain at least one digit
+    if (!password.contains(RegExp(r'[0-9]'))) return false;
+    
+    // Password must contain at least one special character
+    if (!password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) return false;
+    
+    return true;
+  }
+
+  static String? validateName(String name) {
+    if (name.trim().isEmpty) {
+      return 'Name is required';
+    }
+    if (name.trim().length < 2) {
+      return 'Name must be at least 2 characters long';
+    }
+    if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(name.trim())) {
+      return 'Name can only contain letters and spaces';
+    }
+    return null;
+  }
+
+  static String? validateEmail(String email) {
+    if (email.trim().isEmpty) {
+      return 'Email is required';
+    }
+    if (!isValidEmail(email.trim())) {
+      return 'Please enter a valid email address';
+    }
+    return null;
+  }
+
+  static String? validatePassword(String password) {
+    if (password.isEmpty) {
+      return 'Password is required';
+    }
+    if (password.length < 8) {
+      return 'Password must be at least 8 characters long';
+    }
+    if (!password.contains(RegExp(r'[A-Z]'))) {
+      return 'Password must contain at least one uppercase letter';
+    }
+    if (!password.contains(RegExp(r'[a-z]'))) {
+      return 'Password must contain at least one lowercase letter';
+    }
+    if (!password.contains(RegExp(r'[0-9]'))) {
+      return 'Password must contain at least one number';
+    }
+    if (!password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+      return 'Password must contain at least one special character (!@#\$%^&*(),.?":{}|<>)';
+    }
+    return null;
+  }
+
+  static String? validateConfirmPassword(String password, String confirmPassword) {
+    if (confirmPassword.isEmpty) {
+      return 'Please confirm your password';
+    }
+    if (password != confirmPassword) {
+      return 'Passwords do not match';
+    }
+    return null;
+  }
+}
+
 void main() {
   runApp(const MyApp());
 }
@@ -36,21 +118,55 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _error;
 
   void _login() {
+    // Clear previous errors
+    setState(() {
+      _error = null;
+    });
+
     final email = _emailController.text.trim();
     final password = _passwordController.text;
-    if (users.containsKey(email) && users[email]!['password'] == password) {
-      final userProvider = Provider.of<UserProvider>(context, listen: false);
-      userProvider.setUser(User(
-        name: users[email]!['name']!,
-        email: email,
-        profileImagePath: users[email]!['profileImagePath'],
-      ));
-      Navigator.pushReplacementNamed(context, '/home');
-    } else {
+
+    // Validate email
+    final emailError = ValidationUtils.validateEmail(email);
+    if (emailError != null) {
       setState(() {
-        _error = 'Invalid email or password';
+        _error = emailError;
       });
+      return;
     }
+
+    // Validate password
+    if (password.isEmpty) {
+      setState(() {
+        _error = 'Password is required';
+      });
+      return;
+    }
+
+    // Check if user exists
+    if (!users.containsKey(email)) {
+      setState(() {
+        _error = 'No account found with this email address';
+      });
+      return;
+    }
+
+    // Verify password
+    if (users[email]!['password'] != password) {
+      setState(() {
+        _error = 'Incorrect password';
+      });
+      return;
+    }
+
+    // Login successful
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.setUser(User(
+      name: users[email]!['name']!,
+      email: email,
+      profileImagePath: users[email]!['profileImagePath'],
+    ));
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override
@@ -253,35 +369,75 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String? _error;
 
   void _signup() {
+    // Clear previous errors
+    setState(() {
+      _error = null;
+    });
+
+    final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
-    if (email.isEmpty || password.isEmpty) {
+
+    // Validate name
+    final nameError = ValidationUtils.validateName(name);
+    if (nameError != null) {
       setState(() {
-        _error = 'Email and password are required';
+        _error = nameError;
       });
       return;
     }
-    if (password != confirmPassword) {
+
+    // Validate email
+    final emailError = ValidationUtils.validateEmail(email);
+    if (emailError != null) {
       setState(() {
-        _error = 'Passwords do not match';
+        _error = emailError;
       });
       return;
     }
+
+    // Validate password
+    final passwordError = ValidationUtils.validatePassword(password);
+    if (passwordError != null) {
+      setState(() {
+        _error = passwordError;
+      });
+      return;
+    }
+
+    // Validate confirm password
+    final confirmPasswordError = ValidationUtils.validateConfirmPassword(password, confirmPassword);
+    if (confirmPasswordError != null) {
+      setState(() {
+        _error = confirmPasswordError;
+      });
+      return;
+    }
+
+    // Check if email already exists
     if (users.containsKey(email)) {
       setState(() {
-        _error = 'Email already registered';
+        _error = 'An account with this email already exists';
       });
       return;
     }
+
+    // Create user account
     users[email] = {
       'password': password,
-      'name': _nameController.text.trim(),
+      'name': name,
       'profileImagePath': '',
     };
+
+    // Show success message and navigate back
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Account created! Please log in.'), backgroundColor: Colors.green),
+      const SnackBar(
+        content: Text('Account created successfully! Please log in.'),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 3),
+      ),
     );
   }
 
@@ -345,6 +501,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       controller: _nameController,
                       decoration: InputDecoration(
                         hintText: 'Enter your full name',
+                        helperText: 'Must be at least 2 characters, letters and spaces only',
+                        helperMaxLines: 2,
+                        helperStyle: const TextStyle(color: Colors.white),
                         filled: true,
                         fillColor: Colors.white,
                         contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -369,6 +528,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       controller: _emailController,
                       decoration: InputDecoration(
                         hintText: 'Enter your email',
+                        helperText: 'Enter a valid email address (e.g., user@example.com)',
+                        helperMaxLines: 2,
+                        helperStyle: const TextStyle(color: Colors.white),
                         filled: true,
                         fillColor: Colors.white,
                         contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -394,6 +556,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'Create a password',
+                        helperText: 'Must be at least 8 characters with uppercase, lowercase, number, and special character',
+                        helperMaxLines: 3,
+                        helperStyle: const TextStyle(color: Colors.white),
                         filled: true,
                         fillColor: Colors.white,
                         contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -419,6 +584,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       obscureText: true,
                       decoration: InputDecoration(
                         hintText: 'Confirm your password',
+                        helperText: 'Re-enter your password to confirm',
+                        helperMaxLines: 2,
+                        helperStyle: const TextStyle(color: Colors.white),
                         filled: true,
                         fillColor: Colors.white,
                         contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
