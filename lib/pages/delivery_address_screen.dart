@@ -13,7 +13,6 @@ class DeliveryAddressScreen extends StatefulWidget {
 class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
   late TextEditingController _addressController;
   late TextEditingController _cityController;
-  late TextEditingController _stateController;
   late TextEditingController _zipCodeController;
   late TextEditingController _phoneController;
   final _formKey = GlobalKey<FormState>();
@@ -25,7 +24,6 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
     final user = Provider.of<UserProvider>(context, listen: false).user;
     _addressController = TextEditingController(text: user?.address ?? '');
     _cityController = TextEditingController(text: user?.city ?? '');
-    _stateController = TextEditingController(text: user?.state ?? '');
     _zipCodeController = TextEditingController(text: user?.zipCode ?? '');
     _phoneController = TextEditingController(text: user?.phoneNumber ?? '');
   }
@@ -34,7 +32,6 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
   void dispose() {
     _addressController.dispose();
     _cityController.dispose();
-    _stateController.dispose();
     _zipCodeController.dispose();
     _phoneController.dispose();
     super.dispose();
@@ -56,7 +53,6 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
       userProvider.updateUserAddress(
         address: _addressController.text.trim(),
         city: _cityController.text.trim(),
-        state: _stateController.text.trim(),
         zipCode: _zipCodeController.text.trim(),
         phoneNumber: _phoneController.text.trim(),
       );
@@ -69,7 +65,6 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
           ...userData,
           'address': user.address ?? '',
           'city': user.city ?? '',
-          'state': user.state ?? '',
           'zipCode': user.zipCode ?? '',
           'phoneNumber': user.phoneNumber ?? '',
         };
@@ -215,7 +210,7 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
               ),
               const SizedBox(height: 20),
 
-              // City and State Row
+              // City and ZIP Code Row
               Row(
                 children: [
                   Expanded(
@@ -256,45 +251,6 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'State',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        TextFormField(
-                          controller: _stateController,
-                          decoration: InputDecoration(
-                            hintText: 'Enter state',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[50],
-                          ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Please enter state';
-                            }
-                            return null;
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // ZIP Code and Phone Row
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
                           'ZIP Code',
                           style: TextStyle(
                             fontSize: 16,
@@ -322,42 +278,37 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Phone Number',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        TextFormField(
-                          controller: _phoneController,
-                          keyboardType: TextInputType.phone,
-                          decoration: InputDecoration(
-                            hintText: 'Enter phone number',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            prefixIcon: const Icon(Icons.phone_outlined),
-                            filled: true,
-                            fillColor: Colors.grey[50],
-                          ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Please enter phone number';
-                            }
-                            return null;
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
+              ),
+              const SizedBox(height: 20),
+
+              // Phone Number Field
+              const Text(
+                'Phone Number',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  hintText: 'Enter phone number',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: const Icon(Icons.phone_outlined),
+                  filled: true,
+                  fillColor: Colors.grey[50],
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter phone number';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 32),
 
