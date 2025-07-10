@@ -19,12 +19,15 @@ class CategoryButton extends StatelessWidget {
         foregroundColor: isSelected ? Colors.white : Colors.black,
         backgroundColor: isSelected ? Colors.red[600] : Colors.grey[300],
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
       onPressed: onPressed,
-      child: Text(label),
+      child: Text(
+        label,
+        style: const TextStyle(fontSize: 13),
+      ),
     );
   }
 } 

@@ -16,7 +16,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String selectedCategory = 'All';
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
 
   final List<Map<String, dynamic>> allProducts = [
     {'name': 'Socket', 'price': '₱299', 'sold': '2.1k', 'image': 'assets/images/socket.jpg', 'category': 'Tools'},
@@ -32,23 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<String> categories = ['All', 'Tools', 'Switches', 'Lighting', 'Circuit Breaker'];
 
   List<Map<String, dynamic>> get filteredProducts {
-    List<Map<String, dynamic>> filtered = allProducts;
-    
-    // Filter by category
-    if (selectedCategory != 'All') {
-      filtered = filtered.where((product) => product['category'] == selectedCategory).toList();
-    }
-    
-    // Filter by search query
-    if (_searchQuery.isNotEmpty) {
-      filtered = filtered.where((product) {
-        final name = product['name'].toString().toLowerCase();
-        final query = _searchQuery.toLowerCase();
-        return name.contains(query);
-      }).toList();
-    }
-    
-    return filtered;
+    return allProducts;
   }
 
   @override
@@ -75,17 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 hintText: 'Search products...',
                 hintStyle: const TextStyle(color: Colors.black87),
                 prefixIcon: const Icon(Icons.search, color: Colors.black),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear, color: Colors.black),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {
-                            _searchQuery = '';
-                          });
-                        },
-                      )
-                    : null,
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -94,11 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               style: const TextStyle(color: Colors.black),
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
+              readOnly: true,
             ),
           ),
           actions: [
@@ -118,20 +86,20 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: categories.map((category) {
-                return CategoryButton(
-                  label: category,
-                  isSelected: selectedCategory == category,
-                  onPressed: () {
-                    setState(() {
-                      selectedCategory = category;
-                    });
-                  },
-                );
-              }).toList(),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: categories.map((category) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: CategoryButton(
+                      label: category,
+                      isSelected: selectedCategory == category,
+                      onPressed: null,
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
             const SizedBox(height: 24),
             Expanded(
