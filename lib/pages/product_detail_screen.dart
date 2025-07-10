@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'cart_screen.dart';
 import 'checkout_screen.dart';
+import '../models/product.dart';
+import '../services/data_service.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final String productName;
@@ -16,8 +18,24 @@ class ProductDetailScreen extends StatelessWidget {
     required this.imagePath,
   });
 
+  Product? get product {
+    return DataService.products.firstWhere(
+      (p) => p.name == productName,
+      orElse: () => Product(
+        id: 'temp',
+        name: productName,
+        price: price,
+        soldCount: soldCount,
+        imagePath: imagePath,
+        categoryId: 'tools',
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final productData = product;
+    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red[600],
@@ -46,10 +64,32 @@ class ProductDetailScreen extends StatelessWidget {
             Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  imagePath,
-                  height: 250,
-                  fit: BoxFit.cover,
+                child: Stack(
+                  children: [
+                    Image.asset(
+                      imagePath,
+                      height: 250,
+                      fit: BoxFit.cover,
+                    ),
+                    if (productData != null && !productData.isAvailable)
+                      Container(
+                        height: 250,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Out of Stock',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
@@ -58,12 +98,29 @@ class ProductDetailScreen extends StatelessWidget {
               productName,
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 8),
+            if (productData != null) ...[
+              Row(
+                children: [
+                  Icon(Icons.star, color: Colors.amber[600], size: 16),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${productData.rating} (${productData.reviewCount} reviews)',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+            ],
             Text(
               'Price: $price',
               style: TextStyle(fontSize: 18, color: Colors.red[600], fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 8),
             Text(
               'Sold: $soldCount',
               style: const TextStyle(fontSize: 14, color: Colors.grey),
@@ -74,9 +131,9 @@ class ProductDetailScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 12),
-            const Text(
-              'This is a high-quality electrical product, ideal for both residential and commercial use. Designed for durability and efficiency.',
-              style: TextStyle(fontSize: 14),
+            Text(
+              productData?.description ?? 'This is a high-quality electrical product, ideal for both residential and commercial use. Designed for durability and efficiency.',
+              style: const TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 24),
             const Divider(),
@@ -128,7 +185,7 @@ class ProductDetailScreen extends StatelessWidget {
           children: [
             Expanded(
               child: ElevatedButton.icon(
-                onPressed: () {
+                onPressed: productData?.isAvailable == false ? null : () {
                   // Add product to cart
                   CartService.addToCart(productName, price, imagePath);
                   // Navigate to cart screen immediately
@@ -153,7 +210,7 @@ class ProductDetailScreen extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: ElevatedButton.icon(
-                onPressed: () {
+                onPressed: productData?.isAvailable == false ? null : () {
                   // Create a single item list for buy now
                   final buyNowItem = {
                     'name': productName,

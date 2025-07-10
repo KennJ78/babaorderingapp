@@ -50,7 +50,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   bool _isValidEmail(String email) {
-    return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
+    // Email validation regex that only accepts .com domains
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.com$',
+      caseSensitive: false,
+    );
+    
+    // Check if email matches the pattern
+    if (!emailRegex.hasMatch(email)) {
+      return false;
+    }
+    
+    // Additional checks
+    if (email.length > 254) {
+      return false; // RFC 5321 limit
+    }
+    
+    // Check for common invalid patterns
+    if (email.startsWith('.') || 
+        email.endsWith('.') || 
+        email.contains('..') ||
+        email.contains('@.') ||
+        email.contains('.@')) {
+      return false;
+    }
+    
+    return true;
   }
 
   Future<void> _pickImage() async {
@@ -288,8 +313,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     return 'Please enter your email';
                   }
                   if (!_isValidEmail(value.trim())) {
-                    return 'Please enter a valid email address';
+                    return 'Please enter a valid email address ending with .com';
                   }
+                  
+                  // Check if email is already in use by another user
+                  final newEmail = value.trim().toLowerCase();
+                  final currentEmail = widget.user.email.toLowerCase();
+                  
+                  if (newEmail != currentEmail) {
+                    // Only check if email is being changed
+                    if (login_signup.users.containsKey(newEmail)) {
+                      return 'This email is already in use by another account';
+                    }
+                  }
+                  
                   return null;
                 },
               ),
