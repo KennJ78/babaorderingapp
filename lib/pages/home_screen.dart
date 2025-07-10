@@ -5,6 +5,9 @@ import 'category_button.dart';
 import 'product_card.dart';
 import 'order_screen.dart';
 import 'profile_screen.dart';
+import '../services/data_service.dart';
+import '../models/category.dart';
+import '../models/product.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,29 +17,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String selectedCategory = 'All';
+  String selectedCategoryId = 'all';
   final TextEditingController _searchController = TextEditingController();
 
-  final List<Map<String, dynamic>> allProducts = [
-    {'name': 'Socket', 'price': '₱299', 'sold': '2.1k', 'image': 'assets/images/socket.jpg', 'category': 'Tools'},
-    {'name': 'Longnose', 'price': '₱450', 'sold': '1.8k', 'image': 'assets/images/longnose.jpg', 'category': 'Tools'},
-    {'name': 'Switch', 'price': '₱799', 'sold': '3.2k', 'image': 'assets/images/switch.jpg', 'category': 'Switches'},
-    {'name': 'Wire', 'price': '₱1,250', 'sold': '950', 'image': 'assets/images/wires.jpg', 'category': 'Tools'},
-    {'name': 'Measuring Tape', 'price': '₱899', 'sold': '1.5k', 'image': 'assets/images/measuringtape.jpg', 'category': 'Tools'},
-    {'name': 'Bulb', 'price': '₱650', 'sold': '2.7k', 'image': 'assets/images/bulb.jpg', 'category': 'Lighting'},
-    {'name': 'Circuit Breaker', 'price': '₱1,499', 'sold': '890', 'image': 'assets/images/circuitbreakers.jpg', 'category': 'Circuit Breaker'},
-    {'name': 'Pliers', 'price': '₱399', 'sold': '1.9k', 'image': 'assets/images/pliers.jpg', 'category': 'Tools'},
-  ];
-
-  final List<String> categories = ['All', 'Tools', 'Switches', 'Lighting', 'Circuit Breaker'];
-
-  List<Map<String, dynamic>> get filteredProducts {
-    return allProducts.where((product) {
-      final matchesCategory = selectedCategory == 'All' || product['category'] == selectedCategory;
-      final matchesSearch = _searchController.text.isEmpty || 
-          product['name'].toString().toLowerCase().contains(_searchController.text.toLowerCase());
-      return matchesCategory && matchesSearch;
-    }).toList();
+  List<Category> get categories => DataService.getAllCategories();
+  
+  List<Product> get filteredProducts {
+    return DataService.getFilteredProducts(
+      categoryId: selectedCategoryId,
+      searchQuery: _searchController.text,
+      availableOnly: false,
+    );
   }
 
   @override
@@ -55,7 +46,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
@@ -113,11 +103,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: CategoryButton(
-                      label: category,
-                      isSelected: selectedCategory == category,
+                      label: category.name,
+                      icon: category.icon,
+                      isSelected: selectedCategoryId == category.id,
                       onPressed: () {
                         setState(() {
-                          selectedCategory = category;
+                          selectedCategoryId = category.id;
                         });
                       },
                     ),
@@ -169,19 +160,19 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (_) => ProductDetailScreen(
-                                  productName: product['name']!,
-                                  price: product['price']!,
-                                  soldCount: product['sold']!,
-                                  imagePath: product['image']!,
+                                  productName: product.name,
+                                  price: product.price,
+                                  soldCount: product.soldCount,
+                                  imagePath: product.imagePath,
                                 ),
                               ),
                             );
                           },
                           child: ProductCard(
-                            productName: product['name']!,
-                            price: product['price']!,
-                            soldCount: product['sold']!,
-                            imagePath: product['image']!,
+                            productName: product.name,
+                            price: product.price,
+                            soldCount: product.soldCount,
+                            imagePath: product.imagePath,
                           ),
                         );
                       },
@@ -219,6 +210,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-
 } 
