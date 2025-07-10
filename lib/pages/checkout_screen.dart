@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'order_confirmation_screen.dart';
 import '../models/order.dart';
 import '../services/order_service.dart';
+import '../models/user.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final List<Map<String, dynamic>> cartItems;
@@ -27,6 +29,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   String _deliveryOption = 'Standard Delivery';
 
   @override
+  void initState() {
+    super.initState();
+    // Auto-populate with user's address from profile
+    final user = Provider.of<UserProvider>(context, listen: false).user;
+    if (user != null) {
+      _name = user.name;
+      _street = user.address ?? '';
+      _city = user.city ?? '';
+      _postalCode = user.zipCode ?? '';
+      _phone = user.phoneNumber ?? '';
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final deliveryFee = _deliveryOption == 'Standard Delivery' ? 100.0 : 150.0;
     final totalWithDelivery = widget.totalAmount + deliveryFee;
@@ -45,11 +61,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildCard('Delivery Information', Icons.location_on, Colors.red[600]!, [
-                _buildField('Full Name', Icons.person_outline, validator: (v) => v?.isEmpty == true ? 'Please enter your name' : null, onSaved: (v) => _name = v ?? ''),
-                _buildField('Street', Icons.home_outlined, validator: (v) => v?.isEmpty == true ? 'Please enter your street' : null, onSaved: (v) => _street = v ?? ''),
-                _buildField('City', Icons.location_on, validator: (v) => v?.isEmpty == true ? 'Please enter your city' : null, onSaved: (v) => _city = v ?? ''),
-                _buildField('Postal Code', Icons.pin_drop, validator: (v) => v?.isEmpty == true ? 'Please enter your postal code' : null, onSaved: (v) => _postalCode = v ?? ''),
-                _buildField('Phone Number', Icons.phone_outlined, keyboardType: TextInputType.phone, validator: (v) => v?.isEmpty == true ? 'Please enter your phone number' : null, onSaved: (v) => _phone = v ?? ''),
+                _buildField('Full Name', Icons.person_outline, initialValue: _name, validator: (v) => v?.isEmpty == true ? 'Please enter your name' : null, onSaved: (v) => _name = v ?? ''),
+                _buildField('Street', Icons.home_outlined, initialValue: _street, validator: (v) => v?.isEmpty == true ? 'Please enter your street' : null, onSaved: (v) => _street = v ?? ''),
+                _buildField('City', Icons.location_on, initialValue: _city, validator: (v) => v?.isEmpty == true ? 'Please enter your city' : null, onSaved: (v) => _city = v ?? ''),
+                _buildField('Postal Code', Icons.pin_drop, initialValue: _postalCode, validator: (v) => v?.isEmpty == true ? 'Please enter your postal code' : null, onSaved: (v) => _postalCode = v ?? ''),
+                _buildField('Phone Number', Icons.phone_outlined, keyboardType: TextInputType.phone, initialValue: _phone, validator: (v) => v?.isEmpty == true ? 'Please enter your phone number' : null, onSaved: (v) => _phone = v ?? ''),
               ]),
               const SizedBox(height: 20),
               _buildCard('Delivery Option', Icons.local_shipping_outlined, Colors.blue[600]!, [
@@ -163,10 +179,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  Widget _buildField(String label, IconData prefixIcon, {int? maxLines, TextInputType? keyboardType, String? Function(String?)? validator, void Function(String?)? onSaved}) {
+  Widget _buildField(String label, IconData prefixIcon, {int? maxLines, TextInputType? keyboardType, String? Function(String?)? validator, void Function(String?)? onSaved, String? initialValue}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: TextFormField(
+        initialValue: initialValue,
         decoration: InputDecoration(
           labelText: label,
           prefixIcon: Icon(prefixIcon, color: Colors.grey[600]),

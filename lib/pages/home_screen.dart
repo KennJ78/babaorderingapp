@@ -31,7 +31,20 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<String> categories = ['All', 'Tools', 'Switches', 'Lighting', 'Circuit Breaker'];
 
   List<Map<String, dynamic>> get filteredProducts {
-    return allProducts;
+    return allProducts.where((product) {
+      final matchesCategory = selectedCategory == 'All' || product['category'] == selectedCategory;
+      final matchesSearch = _searchController.text.isEmpty || 
+          product['name'].toString().toLowerCase().contains(_searchController.text.toLowerCase());
+      return matchesCategory && matchesSearch;
+    }).toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -58,6 +71,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 hintText: 'Search products...',
                 hintStyle: const TextStyle(color: Colors.black87),
                 prefixIcon: const Icon(Icons.search, color: Colors.black),
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, color: Colors.black),
+                        onPressed: () {
+                          _searchController.clear();
+                        },
+                      )
+                    : null,
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -66,7 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               style: const TextStyle(color: Colors.black),
-              readOnly: true,
             ),
           ),
           actions: [
@@ -95,7 +115,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: CategoryButton(
                       label: category,
                       isSelected: selectedCategory == category,
-                      onPressed: null,
+                      onPressed: () {
+                        setState(() {
+                          selectedCategory = category;
+                        });
+                      },
                     ),
                   );
                 }).toList(),
@@ -103,39 +127,65 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 24),
             Expanded(
-              child: GridView.builder(
-                itemCount: filteredProducts.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 0.7,
-                ),
-                itemBuilder: (context, index) {
-                  final product = filteredProducts[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ProductDetailScreen(
+              child: filteredProducts.isEmpty
+                  ? const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.search_off, size: 64, color: Colors.grey),
+                          SizedBox(height: 16),
+                          Text(
+                            'No products found',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Try adjusting your search or category filter',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : GridView.builder(
+                      itemCount: filteredProducts.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        childAspectRatio: 0.7,
+                      ),
+                      itemBuilder: (context, index) {
+                        final product = filteredProducts[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ProductDetailScreen(
+                                  productName: product['name']!,
+                                  price: product['price']!,
+                                  soldCount: product['sold']!,
+                                  imagePath: product['image']!,
+                                ),
+                              ),
+                            );
+                          },
+                          child: ProductCard(
                             productName: product['name']!,
                             price: product['price']!,
                             soldCount: product['sold']!,
                             imagePath: product['image']!,
                           ),
-                        ),
-                      );
-                    },
-                    child: ProductCard(
-                      productName: product['name']!,
-                      price: product['price']!,
-                      soldCount: product['sold']!,
-                      imagePath: product['image']!,
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           ],
         ),

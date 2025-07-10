@@ -19,6 +19,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController _usernameController;
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
+  late TextEditingController _addressController;
+  late TextEditingController _cityController;
+  late TextEditingController _zipCodeController;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
@@ -29,6 +32,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _usernameController = TextEditingController(text: widget.user.username ?? '');
     _emailController = TextEditingController(text: widget.user.email);
     _phoneController = TextEditingController(text: widget.user.phoneNumber ?? '');
+    _addressController = TextEditingController(text: widget.user.address ?? '');
+    _cityController = TextEditingController(text: widget.user.city ?? '');
+    _zipCodeController = TextEditingController(text: widget.user.zipCode ?? '');
   }
 
   @override
@@ -37,6 +43,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _usernameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
+    _addressController.dispose();
+    _cityController.dispose();
+    _zipCodeController.dispose();
     super.dispose();
   }
 
@@ -79,10 +88,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         email: _emailController.text.trim(),
         phoneNumber: _phoneController.text.trim(),
         profileImagePath: widget.user.profileImagePath,
-        address: widget.user.address,
-        city: widget.user.city,
-        state: widget.user.state,
-        zipCode: widget.user.zipCode,
+        address: _addressController.text.trim(),
+        city: _cityController.text.trim(),
+        zipCode: _zipCodeController.text.trim(),
       );
 
       // Update in UserProvider
@@ -103,10 +111,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           'phoneNumber': updatedUser.phoneNumber ?? '',
           'password': userData['password'] ?? '', // Keep the same password
           'profileImagePath': updatedUser.profileImagePath ?? '', // Handle nullable profileImagePath
-          'address': userData['address'] ?? '',
-          'city': userData['city'] ?? '',
-          'state': userData['state'] ?? '',
-          'zipCode': userData['zipCode'] ?? '',
+          'address': updatedUser.address ?? '',
+          'city': updatedUser.city ?? '',
+          'zipCode': updatedUser.zipCode ?? '',
         };
       }
 
@@ -285,8 +292,139 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   }
                   return null;
                 },
-                             ),
-               const SizedBox(height: 32),
+              ),
+              const SizedBox(height: 24),
+
+              // Phone Field
+              const Text(
+                'Phone Number',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  hintText: 'Enter your phone number',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: const Icon(Icons.phone_outlined),
+                  filled: true,
+                  fillColor: Colors.grey[50],
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your phone number';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+
+              // Address Field
+              const Text(
+                'Address',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _addressController,
+                decoration: InputDecoration(
+                  hintText: 'Enter your address',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: const Icon(Icons.home_outlined),
+                  filled: true,
+                  fillColor: Colors.grey[50],
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your address';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+
+              // City and ZIP Code Row
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'City',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: _cityController,
+                          decoration: InputDecoration(
+                            hintText: 'Enter city',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[50],
+                          ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Please enter city';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'ZIP Code',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          controller: _zipCodeController,
+                          decoration: InputDecoration(
+                            hintText: 'Enter ZIP code',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[50],
+                          ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Please enter ZIP code';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
 
                // Save Button
               SizedBox(
