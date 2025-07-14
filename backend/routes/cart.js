@@ -104,5 +104,35 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+// DELETE /api/cart/remove/:productId - Remove item from cart
+router.delete('/remove/:productId', auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { productId } = req.params;
+    
+    const cart = await Cart.findOne({ userId });
+    
+    if (!cart) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+    
+    // Remove item
+    cart.items = cart.items.filter(item => item.productId !== productId);
+    await cart.save();
+    
+    res.json({ 
+      message: 'Item removed from cart',
+      itemCount: cart.items.length
+    });
+    
+  } catch (error) {
+    console.error('Remove from cart error:', error);
+    res.status(500).json({ 
+      message: 'Server error while removing item',
+      error: error.message 
+    });
+  }
+});
+
 
 module.exports = router; 
