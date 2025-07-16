@@ -111,6 +111,7 @@ router.put('/profile', auth, async (req, res) => {
     if (city !== undefined) user.city = city;
     if (state !== undefined) user.state = state;
     if (zipCode !== undefined) user.zipCode = zipCode;
+    if (profileImagePath !== undefined) user.profileImagePath = profileImagePath;
 
 
     await user.save();

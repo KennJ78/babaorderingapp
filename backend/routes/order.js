@@ -2,6 +2,7 @@ const express = require('express');
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const auth = require('../middleware/auth');
+const User = require('../models/User');
 const router = express.Router();
 
 // POST /api/orders/checkout - Create order from cart and clear cart
@@ -95,6 +96,22 @@ router.post('/checkout', auth, async (req, res) => {
   } catch (error) {
     console.error('Checkout error:', error);
     res.status(500).json({ message: 'Server error during checkout.', error: error.message });
+  }
+});
+
+// GET /api/orders/all - Admin: View all users' orders
+router.get('/all', auth, async (req, res) => {
+  try {
+    // Fetch user from DB to check admin status
+    const user = await User.findById(req.user.userId);
+    if (!user || !user.isAdmin) {
+      return res.status(403).json({ message: 'Access denied. Admins only.' });
+    }
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.json({ orders });
+  } catch (error) {
+    console.error('Admin get all orders error:', error);
+    res.status(500).json({ message: 'Server error fetching orders.', error: error.message });
   }
 });
 
