@@ -22,7 +22,7 @@ router.post('/add', auth, async (req, res) => {
       });
     }
     
-    const userId = req.user._id;
+    const userId = req.user.userId;
     
     // Find existing cart or create new one
     let cart = await Cart.findOne({ userId });
@@ -68,7 +68,7 @@ router.post('/add', auth, async (req, res) => {
 // GET /api/cart - Get user's cart items
 router.get('/', auth, async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.userId;
     
     const cart = await Cart.findOne({ userId });
     
@@ -107,7 +107,7 @@ router.get('/', auth, async (req, res) => {
 // DELETE /api/cart/remove/:productId - Remove item from cart
 router.delete('/remove/:productId', auth, async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.userId;
     const { productId } = req.params;
     
     const cart = await Cart.findOne({ userId });

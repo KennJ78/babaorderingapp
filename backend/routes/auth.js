@@ -84,4 +84,46 @@ router.get('/profile', auth, async (req, res) => {
   }
 });
 
+// PUT /api/auth/profile
+router.put('/profile', auth, async (req, res) => {
+  try {
+    const { name, username, email, phoneNumber, address, city, state, zipCode, profileImagePath } = req.body;
+
+    // Check if email is being changed and if it's already in use
+    if (email) {
+      const existingUser = await User.findOne({ email, _id: { $ne: req.user.userId } });
+      if (existingUser) {
+        return res.status(400).json({ message: 'This email is already in use by another account.' });
+      }
+    }
+
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Update fields
+    if (name) user.name = name;
+    if (username !== undefined) user.username = username;
+    if (email) user.email = email;
+    if (phoneNumber !== undefined) user.phoneNumber = phoneNumber;
+    if (address !== undefined) user.address = address;
+    if (city !== undefined) user.city = city;
+    if (state !== undefined) user.state = state;
+    if (zipCode !== undefined) user.zipCode = zipCode;
+
+
+    await user.save();
+
+    res.json({
+      message: 'Profile updated successfully',
+      user: user.toJSON()
+    });
+
+  } catch (err) {
+    console.error('Update profile error:', err);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
 module.exports = router; 

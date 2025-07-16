@@ -80,6 +80,7 @@ const orderSchema = new mongoose.Schema({
 
 // Generate order reference
 orderSchema.pre('save', function(next) {
+  console.log('Pre-save hook running for order...');
   if (!this.orderReference) {
     const timestamp = Date.now().toString().slice(-6);
     const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
