@@ -21,6 +21,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/cart', require('./routes/cart'));
+app.use('/api/orders', require('./routes/order'));
 
 // Basic route
 app.get('/', (req, res) => {

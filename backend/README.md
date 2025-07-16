@@ -7,6 +7,7 @@ A Node.js/Express backend with MongoDB for the Baba Ordering App.
 - User authentication (signup/login)
 - JWT token-based authentication
 - Cart management
+- Order management (checkout)
 - MongoDB database integration
 - Input validation
 - Error handling
@@ -22,7 +23,7 @@ npm install
 ```
 MONGODB_URI=mongodb://localhost:27017/baba_ordering
 JWT_SECRET=your_jwt_secret_key_here
-PORT=5000
+PORT=4000
 ```
 
 3. Make sure MongoDB is running on your system
@@ -46,14 +47,7 @@ Register a new user
 {
   "name": "John Doe",
   "email": "john@example.com",
-  "password": "password123",
-  "phone": "1234567890",
-  "address": {
-    "street": "123 Main St",
-    "city": "City",
-    "state": "State",
-    "zipCode": "12345"
-  }
+  "password": "password123"
 }
 ```
 
@@ -66,34 +60,56 @@ Login user
 }
 ```
 
-#### GET /api/auth/me
+#### GET /api/auth/profile
 Get current user profile (requires authentication)
+
+**Headers:**
+```
+Authorization: Bearer <your_jwt_token>
+```
 
 #### PUT /api/auth/profile
 Update user profile (requires authentication)
+
+**Headers:**
+```
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
+```
+**Sample Body:**
+```json
+{
+  "name": "Jane Doe",
+  "username": "janedoe",
+  "email": "jane@example.com",
+  "phoneNumber": "09171234567",
+  "address": "123 New St",
+  "city": "Metro City",
+  "state": "Metro State",
+  "zipCode": "54321",
+  "profileImagePath": "/images/profile.jpg"
+}
+```
 
 ### Cart Management
 
 #### GET /api/cart
 Get user's cart (requires authentication)
 
+**Headers:**
+```
+Authorization: Bearer <your_jwt_token>
+```
+
 #### POST /api/cart/add
 Add item to cart (requires authentication)
 ```json
 {
-  "productId": "product_id_here",
-  "name": "Product Name",
-  "price": 29.99,
+  "productId": "abc123",
+  "name": "LED Bulb",
+  "price": 49.99,
   "quantity": 2,
-  "image": "product_image_url"
-}
-```
-
-#### PUT /api/cart/update/:productId
-Update item quantity in cart (requires authentication)
-```json
-{
-  "quantity": 3
+  "image": "https://example.com/images/led-bulb.jpg"
 }
 ```
 
@@ -103,31 +119,61 @@ Remove item from cart (requires authentication)
 #### DELETE /api/cart/clear
 Clear all items from cart (requires authentication)
 
+### Order Management
+
+#### POST /api/orders/checkout
+Checkout items in the cart and create an order (requires authentication)
+
+**Headers:**
+```
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
+```
+**Sample Body (all items):**
+```json
+{
+  "customerName": "John Doe",
+  "street": "123 Main St",
+  "city": "Metro City",
+  "postalCode": "12345",
+  "phone": "09171234567",
+  "deliveryOption": "Delivery",
+  "deliveryFee": 50
+}
+```
+**Sample Body (specific items):**
+```json
+{
+  "customerName": "John Doe",
+  "street": "123 Main St",
+  "city": "Metro City",
+  "postalCode": "12345",
+  "phone": "09171234567",
+  "deliveryOption": "Delivery",
+  "deliveryFee": 50,
+  "itemsToCheckout": ["abc123", "def456"]
+}
+```
+
+**Success Response:**
+```json
+{
+  "message": "Order placed successfully.",
+  "order": {
+    "_id": "...",
+    "orderReference": "ORD-123456-789",
+    "customerName": "John Doe",
+    // ...other order details...
+  }
+}
+```
+
 ## Authentication
 
 All protected routes require a JWT token in the Authorization header:
 ```
 Authorization: Bearer <your_jwt_token>
 ```
-
-## Database Models
-
-### User Model
-- name (required)
-- email (required, unique)
-- password (required, hashed)
-- phone (required)
-- address (optional)
-- role (user/admin)
-- isActive (boolean)
-- timestamps
-
-### Cart Model
-- userId (reference to User)
-- items (array of cart items)
-- totalAmount (calculated)
-- itemCount (calculated)
-- timestamps
 
 ## Error Handling
 
