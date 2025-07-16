@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const auth = require('../middleware/auth');
 const router = express.Router();
 
 // POST /api/auth/signup
@@ -61,6 +62,24 @@ router.post('/login', async (req, res) => {
     
   } catch (err) {
     console.error('Login error:', err);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// GET /api/auth/profile
+router.get('/profile', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    
+    res.json({
+      user: user.toJSON()
+    });
+    
+  } catch (err) {
+    console.error('Get profile error:', err);
     res.status(500).json({ message: 'Server error.' });
   }
 });
