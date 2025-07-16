@@ -47,6 +47,10 @@ const userSchema = new mongoose.Schema({
   phoneNumber: {
     type: String,
     trim: true
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true
