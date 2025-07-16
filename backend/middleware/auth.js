@@ -20,7 +20,10 @@ const auth = async (req, res, next) => {
     }
     
     // Add user to request object
-    req.user = user;
+    req.user = {
+      userId: user._id,
+      email: user.email
+    };
     next();
     
   } catch (err) {
