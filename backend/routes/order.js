@@ -115,4 +115,16 @@ router.get('/all', auth, async (req, res) => {
   }
 });
 
+// GET /api/orders/user - Get all orders for the authenticated user
+router.get('/user', auth, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const orders = await Order.find({ userId }).sort({ createdAt: -1 });
+    res.json({ orders });
+  } catch (error) {
+    console.error('Get user orders error:', error);
+    res.status(500).json({ message: 'Server error fetching user orders.', error: error.message });
+  }
+});
+
 module.exports = router; 
