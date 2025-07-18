@@ -91,6 +91,28 @@ Content-Type: application/json
 }
 ```
 
+#### PUT /api/auth/change-password
+Change the user's password (requires authentication)
+
+**Headers:**
+```
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
+```
+**Sample Body:**
+```json
+{
+  "oldPassword": "your_current_password",
+  "newPassword": "your_new_password"
+}
+```
+**Success Response:**
+```json
+{
+  "message": "Password changed successfully."
+}
+```
+
 ### Cart Management
 
 #### GET /api/cart
@@ -129,29 +151,30 @@ Checkout items in the cart and create an order (requires authentication)
 Authorization: Bearer <your_jwt_token>
 Content-Type: application/json
 ```
-**Sample Body (all items):**
+
+**How delivery info is handled:**
+- If you do not provide delivery info (name, address, city, zip, phone, etc.) in the request body, the backend will automatically use the latest info from your user profile.
+- You only need to provide `itemsToCheckout` in the body if your profile is up to date.
+- The following user profile fields are used for delivery info:
+  - `name` → customerName
+  - `address` → street
+  - `city` → city
+  - `zipCode` → postalCode
+  - `phoneNumber` → phone
+
+**Sample Body (all items, using profile info):**
 ```json
 {
-  "customerName": "John Doe",
-  "street": "123 Main St",
-  "city": "Metro City",
-  "postalCode": "12345",
-  "phone": "09171234567",
-  "deliveryOption": "Delivery",
-  "deliveryFee": 50
+  "itemsToCheckout": ["abc123", "def456"]
 }
 ```
-**Sample Body (specific items):**
+
+**Sample Body (override some fields):**
 ```json
 {
   "customerName": "John Doe",
   "street": "123 Main St",
-  "city": "Metro City",
-  "postalCode": "12345",
-  "phone": "09171234567",
-  "deliveryOption": "Delivery",
-  "deliveryFee": 50,
-  "itemsToCheckout": ["abc123", "def456"]
+  "itemsToCheckout": ["abc123"]
 }
 ```
 
