@@ -15,18 +15,23 @@ router.post('/checkout', auth, async (req, res) => {
       return res.status(400).json({ message: 'Cart is empty.' });
     }
 
-    // Extract order details from request body
-    const {
-      customerName,
-      street,
-      city,
-      postalCode,
-      phone,
-      deliveryOption,
-      deliveryFee,
-      itemsToCheckout // Array of productIds
-    } = req.body;
+    // Fetch user profile
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
 
+    // Extract order details from request body or fallback to user profile
+    const customerName = req.body.customerName || user.name;
+    const street = req.body.street || user.address; // user.address maps to street
+    const city = req.body.city || user.city;
+    const postalCode = req.body.postalCode || user.zipCode;
+    const phone = req.body.phone || user.phoneNumber;
+    const deliveryOption = req.body.deliveryOption || 'Delivery'; // default to Delivery if not set
+    const deliveryFee = req.body.deliveryFee !== undefined ? req.body.deliveryFee : 0; // default to 0 if not set
+
+    // Only require itemsToCheckout in body
+    const { itemsToCheckout } = req.body;
     if (!customerName || !street || !city || !postalCode || !phone || !deliveryOption || deliveryFee === undefined) {
       return res.status(400).json({ message: 'Missing required order details.' });
     }
