@@ -144,7 +144,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget _buildOrderCard(Order order) {
-    return OrderSummaryCard(order: order);
+    return OrderSummaryCard(order: order, onOrderCancelled: _loadOrders);
   }
 
   Color _getStatusColor(String status) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/order_service.dart';
 
 class OrderConfirmationScreen extends StatelessWidget {
   final String name;
@@ -165,7 +166,7 @@ class OrderConfirmationScreen extends StatelessWidget {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red[600],
+                        backgroundColor: Colors.orange[600],
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -189,6 +190,46 @@ class OrderConfirmationScreen extends StatelessWidget {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Cancel Order Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        final order = await OrderService.getOrderByReference(displayOrderReference);
+                        if (order != null && order.status.toLowerCase() == 'pending') {
+                          await OrderService.updateOrderStatus(order.id, 'Cancelled');
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Order cancelled.')),
+                            );
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/home',
+                              (Route<dynamic> route) => false,
+                            );
+                          }
+                        } else {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Order cannot be cancelled.')), 
+                            );
+                          }
+                        }
+                      },
+                      icon: const Icon(Icons.cancel),
+                      label: const Text('Cancel Order'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red[800],
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 2,
+                        shadowColor: Colors.red.withOpacity(0.2),
                       ),
                     ),
                   ),
