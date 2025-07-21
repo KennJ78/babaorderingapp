@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../models/order.dart';
+import '../services/order_service.dart';
 
 class OrderSummaryCard extends StatefulWidget {
   final Order order;
-  const OrderSummaryCard({Key? key, required this.order}) : super(key: key);
+  final VoidCallback? onOrderCancelled;
+  const OrderSummaryCard({Key? key, required this.order, this.onOrderCancelled}) : super(key: key);
 
   @override
   State<OrderSummaryCard> createState() => _OrderSummaryCardState();
@@ -11,6 +13,17 @@ class OrderSummaryCard extends StatefulWidget {
 
 class _OrderSummaryCardState extends State<OrderSummaryCard> {
   bool _expanded = false;
+  bool _isCancelling = false;
+
+  Future<void> _cancelOrder() async {
+    setState(() { _isCancelling = true; });
+    await OrderService.updateOrderStatus(widget.order.id, 'Cancelled');
+    setState(() { _isCancelling = false; });
+    if (widget.onOrderCancelled != null) widget.onOrderCancelled!();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Order cancelled.')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +110,27 @@ class _OrderSummaryCardState extends State<OrderSummaryCard> {
               ],
             ),
             if (_expanded) ...[
+              if (order.status.toLowerCase() == 'pending') ...[
+                const SizedBox(height: 12),
+                _isCancelling
+                  ? const Center(child: CircularProgressIndicator())
+                  : SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: _cancelOrder,
+                        icon: const Icon(Icons.cancel),
+                        label: const Text('Cancel Order'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red[600],
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+              ],
               const SizedBox(height: 16),
               const Divider(),
               Text('Items', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
